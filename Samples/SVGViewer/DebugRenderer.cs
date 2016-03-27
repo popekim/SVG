@@ -30,7 +30,7 @@ namespace SVGViewer
 
         public float DpiY
         {
-            get { return 96; }
+            get { return 72; }
         }
 
         public void DrawImage(Image image, RectangleF destRect, RectangleF srcRect, GraphicsUnit graphicsUnit)
