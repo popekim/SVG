@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
@@ -154,9 +153,9 @@ namespace Svg
                     {
                         using (var solidBrush = new SolidBrush(renderColor))
                         {
-                            var newClip = origClip.Clone();
+                            var newClip = (SvgClipRegion)origClip.Clone();
                             newClip.Exclude(path);
-                            renderer.SetClip(newClip);
+                            renderer.ReplaceClip(newClip);
 
                             var renderPath = (GraphicsPath)renderingElement.Path(renderer);
                             if (forStroke)
@@ -174,7 +173,7 @@ namespace Svg
                     }
                     finally
                     {
-                        renderer.SetClip(origClip);
+                        renderer.ReplaceClip(origClip);
                     }
                 }
 

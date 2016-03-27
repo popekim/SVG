@@ -12,7 +12,7 @@ namespace Svg
     public abstract partial class SvgVisualElement : SvgElement, ISvgBoundable, ISvgStylable, ISvgClipable
     {
         private bool? _requiresSmoothRendering;
-        private Region _previousClip;
+        private SvgClipRegion _previousClip;
 
         /// <summary>
         /// Gets the <see cref="GraphicsPath"/> for this element.
@@ -305,7 +305,10 @@ namespace Svg
                 if (this.ClipPath != null)
                 {
                     SvgClipPath clipPath = this.OwnerDocument.GetElementById<SvgClipPath>(this.ClipPath.ToString());
-                    if (clipPath != null) renderer.SetClip(clipPath.GetClipRegion(this), CombineMode.Intersect);
+                    if (clipPath != null)
+                    {
+                        renderer.SetClip(clipPath.GetClipRegion(this));
+                    }
                 }
 
                 var clip = this.Clip;
@@ -318,7 +321,7 @@ namespace Svg
                     var clipRect = new RectangleF(bounds.Left + offsets[3], bounds.Top + offsets[0],
                                                   bounds.Width - (offsets[3] + offsets[1]),
                                                   bounds.Height - (offsets[2] + offsets[0]));
-                    renderer.SetClip(new Region(clipRect), CombineMode.Intersect);
+                    renderer.SetClip(clipRect);
                 }
             }
         }
@@ -329,10 +332,10 @@ namespace Svg
         /// <param name="renderer">The <see cref="ISvgRenderer"/> to have its clipping region reset.</param>
         protected internal virtual void ResetClip(ISvgRenderer renderer)
         {
-            if (this._previousClip != null)
+            if (_previousClip != null)
             {
-                renderer.SetClip(this._previousClip);
-                this._previousClip = null;
+                renderer.ReplaceClip(_previousClip);
+                _previousClip = null;
             }
         }
 

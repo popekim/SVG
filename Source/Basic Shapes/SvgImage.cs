@@ -148,7 +148,7 @@ namespace Svg
                     RectangleF destRect = destClip;
                         
                     this.PushTransforms(renderer);
-                    renderer.SetClip(new Region(destClip), CombineMode.Intersect);
+                    renderer.SetClip(destClip);
                     this.SetClip(renderer);
 
                     if (AspectRatio != null && AspectRatio.Align != SvgPreserveAspectRatio.none)

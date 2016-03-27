@@ -176,12 +176,12 @@ namespace Svg
                         var clip = new RectangleF(this.X.ToDeviceValue(renderer, UnitRenderingType.Horizontal, this),
                                                   this.Y.ToDeviceValue(renderer, UnitRenderingType.Horizontal, this),
                                                   size.Width, size.Height);
-                        renderer.SetClip(new Region(clip), CombineMode.Intersect);
+                        renderer.SetClip(clip);
                         base.Render(renderer);
                     }
                     finally
                     {
-                        renderer.SetClip(prevClip, CombineMode.Replace);
+                        renderer.ReplaceClip(prevClip);
                     }
                     break;
             }

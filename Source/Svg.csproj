@@ -113,6 +113,7 @@
     <Compile Include="Painting\GenericBoundable.cs" />
     <Compile Include="Painting\SvgFallbackPaintServer .cs" />
     <Compile Include="Paths\CoordinateParser.cs" />
+    <Compile Include="Clipping and Masking\ClipRegion.cs" />
     <Compile Include="Rendering\IGraphicsProvider.cs" />
     <Compile Include="Rendering\ISvgRenderer.cs" />
     <Compile Include="Rendering\SvgRendering.cs" />

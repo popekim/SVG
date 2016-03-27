@@ -144,9 +144,9 @@ namespace Svg.FilterEffects
                 //bufferImg.Save(@"C:\test.png");
                 var imgDraw = RectangleF.Inflate(bounds, inflate * bounds.Width, inflate * bounds.Height);
                 var prevClip = renderer.GetClip();
-                renderer.SetClip(new Region(imgDraw));
+                renderer.ReplaceClip(imgDraw);
                 renderer.DrawImage(bufferImg, imgDraw, new RectangleF(bounds.X, bounds.Y, imgDraw.Width, imgDraw.Height), GraphicsUnit.Pixel);
-                renderer.SetClip(prevClip);
+                renderer.ReplaceClip(prevClip);
             }
         }
                 

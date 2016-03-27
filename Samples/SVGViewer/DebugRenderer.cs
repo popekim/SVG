@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Svg;
 using System.Drawing.Drawing2D;
 using System.Drawing;
@@ -10,9 +7,9 @@ namespace SVGViewer
 {
     class DebugRenderer : ISvgRenderer
     {
-        private Region _clip = new Region();
         private Matrix _transform = new Matrix();
         private Stack<ISvgBoundable> _boundables = new Stack<ISvgBoundable>();
+        private SvgClipRegion _clipRegion = new SvgClipRegion();
 
         public void SetBoundable(ISvgBoundable boundable)
         {
@@ -52,9 +49,9 @@ namespace SVGViewer
             var newPath = (GraphicsPath)path.Clone();
             newPath.Transform(_transform);
         }
-        public Region GetClip()
+        public SvgClipRegion GetClip()
         {
-            return _clip;
+            return _clipRegion;
         }
         public void RotateTransform(float fAngle, MatrixOrder order = MatrixOrder.Append)
         {
@@ -64,30 +61,48 @@ namespace SVGViewer
         {
             _transform.Scale(sx, sy, order);
         }
-        public void SetClip(Region region, CombineMode combineMode = CombineMode.Replace)
+
+        public void ReplaceClip(SvgClipRegion region)
         {
-            switch (combineMode)
+            _clipRegion = region;
+            SetClipRegion();
+        }
+
+        public void ReplaceClip(RectangleF rect)
+        {
+            _clipRegion.Clear();
+            _clipRegion.Intersect(rect);
+            SetClipRegion();
+        }
+
+        public void SetClip(GraphicsPath path)
+        {
+            _clipRegion.Intersect(path);
+            SetClipRegion();
+        }
+
+        public void SetClip(RectangleF rect)
+        {
+            _clipRegion.Intersect(rect);
+            SetClipRegion();
+        }
+
+        private void SetClipRegion()
+        {
+            if (_clipRegion.Paths.Count == 0)
             {
-                case CombineMode.Intersect:
-                    _clip.Intersect(region);
-                    break;
-                case CombineMode.Complement:
-                    _clip.Complement(region);
-                    break;
-                case CombineMode.Exclude:
-                    _clip.Exclude(region);
-                    break;
-                case CombineMode.Union:
-                    _clip.Union(region);
-                    break;
-                case CombineMode.Xor:
-                    _clip.Xor(region);
-                    break;
-                default:
-                    _clip = region;
-                    break;
+            }
+            else
+            {
+                var region = new Region(_clipRegion.Paths[0]);
+                for (int i = 0; i < _clipRegion.Paths.Count; ++i)
+                {
+                    region.Intersect(_clipRegion.Paths[i]);
+                }
             }
         }
+
+
         public void TranslateTransform(float dx, float dy, MatrixOrder order = MatrixOrder.Append)
         {
             _transform.Translate(dx, dy, order);

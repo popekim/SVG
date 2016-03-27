@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Xml;
 using System.Linq;
 using Svg.Transforms;
 using System.Reflection;
-using System.Threading;
-using System.Globalization;
 
 namespace Svg
 {
@@ -43,7 +40,7 @@ namespace Svg
         private EventHandlerList _eventHandlers;
         private SvgElementCollection _children;
         private static readonly object _loadEventKey = new object();
-        private Region _graphicsClip;
+        private SvgClipRegion _graphicsClip;
         private Matrix _graphicsMatrix;
         private SvgCustomAttributeCollection _customAttributes;
         private List<ISvgNode> _nodes = new List<ISvgNode>();
@@ -322,7 +319,7 @@ namespace Svg
         {
             renderer.Transform = _graphicsMatrix;
             _graphicsMatrix = null;
-            renderer.SetClip(_graphicsClip);
+            renderer.ReplaceClip(_graphicsClip);
             _graphicsClip = null;
         }
 

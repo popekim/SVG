@@ -13,12 +13,15 @@ namespace Svg
         void DrawPath(Pen pen, GraphicsPath path);
         void FillPath(Brush brush, GraphicsPath path);
         ISvgBoundable GetBoundable();
-        Region GetClip();
+        SvgClipRegion GetClip();
         ISvgBoundable PopBoundable();
         void RotateTransform(float fAngle, MatrixOrder order = MatrixOrder.Append);
         void ScaleTransform(float sx, float sy, MatrixOrder order = MatrixOrder.Append);
         void SetBoundable(ISvgBoundable boundable);
-        void SetClip(Region region, CombineMode combineMode = CombineMode.Replace);
+        void ReplaceClip(SvgClipRegion region);
+        void ReplaceClip(RectangleF region);
+        void SetClip(GraphicsPath path);
+        void SetClip(RectangleF rectangle);
         CompositingMode CompositingMode { get; set; }
         SmoothingMode SmoothingMode { get; set; }
         Matrix Transform { get; set; }

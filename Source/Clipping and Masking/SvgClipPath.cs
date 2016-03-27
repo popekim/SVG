@@ -35,7 +35,7 @@ namespace Svg
         /// Gets this <see cref="SvgClipPath"/>'s region to be used as a clipping region.
         /// </summary>
         /// <returns>A new <see cref="Region"/> containing the <see cref="Region"/> to be used for clipping.</returns>
-        public Region GetClipRegion(SvgVisualElement owner)
+        public GraphicsPath GetClipRegion(SvgVisualElement owner)
         {
             if (cachedClipPath == null || this._pathDirty)
             {
@@ -62,7 +62,7 @@ namespace Svg
                 }
             }
 
-            return new Region(result);
+            return result;
         }
 
         /// <summary>

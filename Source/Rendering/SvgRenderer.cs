@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
@@ -15,6 +14,7 @@ namespace Svg
     {
         private Graphics _innerGraphics;
         private Stack<ISvgBoundable> _boundables = new Stack<ISvgBoundable>();
+        private SvgClipRegion _clipRegion = new SvgClipRegion();
 
         public void SetBoundable(ISvgBoundable boundable)
         {
@@ -70,10 +70,50 @@ namespace Svg
         {
             this._innerGraphics.ScaleTransform(sx, sy, order);
         }
-        public void SetClip(Region region, CombineMode combineMode = CombineMode.Replace)
-        {
-            this._innerGraphics.SetClip(region, combineMode);
+
+        private void SetClipRegion()
+        { 
+            if (_clipRegion.Paths.Count == 0)
+            {
+                _innerGraphics.ResetClip();
+            }
+            else
+            {
+                var region = new Region(_clipRegion.Paths[0]);
+                for (int i = 0; i < _clipRegion.Paths.Count; ++i)
+                {
+                    region.Intersect(_clipRegion.Paths[i]);
+                }
+
+                _innerGraphics.SetClip(region, CombineMode.Replace);
+            }
         }
+
+        public void ReplaceClip(SvgClipRegion region)
+        {
+            _clipRegion = region;
+            SetClipRegion();
+        }
+
+        public void ReplaceClip(RectangleF rect)
+        {
+            _clipRegion.Paths.Clear();
+            _clipRegion.Intersect(rect);
+            SetClipRegion();
+        }
+
+        public void SetClip(GraphicsPath path)
+        {
+            _clipRegion.Intersect(path);
+            SetClipRegion();
+        }
+
+        public void SetClip(RectangleF rect)
+        {
+            _clipRegion.Intersect(rect);
+            SetClipRegion();
+        }
+
         public void TranslateTransform(float dx, float dy, MatrixOrder order = MatrixOrder.Append)
         {
             this._innerGraphics.TranslateTransform(dx, dy, order);
@@ -134,6 +174,11 @@ namespace Svg
         {
             var img = new Bitmap(1, 1);
             return SvgRenderer.FromImage(img);
+        }
+
+        SvgClipRegion ISvgRenderer.GetClip()
+        {
+            return (SvgClipRegion)_clipRegion.Clone();
         }
     }
 }

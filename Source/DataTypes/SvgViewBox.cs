@@ -200,7 +200,7 @@ namespace Svg
                 }
             }
 
-            renderer.SetClip(new Region(new RectangleF(x, y, width, height)), CombineMode.Intersect);
+            renderer.SetClip(new RectangleF(x, y, width, height));
             renderer.ScaleTransform(fScaleX, fScaleY, MatrixOrder.Prepend);
             renderer.TranslateTransform(x, y);
             renderer.TranslateTransform(fMinX, fMinY);
