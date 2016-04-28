@@ -26,5 +26,7 @@ namespace Svg
         SmoothingMode SmoothingMode { get; set; }
         Matrix Transform { get; set; }
         void TranslateTransform(float dx, float dy, MatrixOrder order = MatrixOrder.Append);
+        ISvgRenderer BeginPatternRender(float width, float height);
+        Brush EndPatternRender(Matrix patternMatrix);
     }
 }

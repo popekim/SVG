@@ -2,6 +2,7 @@
 using Svg;
 using System.Drawing.Drawing2D;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace SVGViewer
 {
@@ -10,6 +11,27 @@ namespace SVGViewer
         private Matrix _transform = new Matrix();
         private Stack<ISvgBoundable> _boundables = new Stack<ISvgBoundable>();
         private SvgClipRegion _clipRegion = new SvgClipRegion();
+
+        private Bitmap _patternImage;
+
+        public ISvgRenderer BeginPatternRender(float width, float height)
+        {
+            Debug.Assert(_patternImage == null, "always call begin and end pair");
+
+            _patternImage = new Bitmap((int)width, (int)height);
+            return SvgRenderer.FromImage(_patternImage);
+        }
+        public Brush EndPatternRender(Matrix brushTransform)
+        {
+            Debug.Assert(_patternImage != null, "always call begin and end pair");
+
+            TextureBrush textureBrush = new TextureBrush(_patternImage);
+            _patternImage = null;
+
+            textureBrush.Transform = brushTransform;
+
+            return textureBrush;
+        }
 
         public void SetBoundable(ISvgBoundable boundable)
         {

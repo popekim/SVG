@@ -221,9 +221,9 @@ namespace Svg
                                         (viewBox.Width > 0 ? width / viewBox.Width : 1),
                                         (patternContentUnits == SvgCoordinateUnits.ObjectBoundingBox ? bounds.Height : 1) * 
                                         (viewBox.Height > 0 ? height / viewBox.Height : 1), MatrixOrder.Prepend);
-                    
-                    Bitmap image = new Bitmap((int)width, (int)height);
-                    using (var iRenderer = SvgRenderer.FromImage(image))
+
+                    Brush brush;
+                    using (var iRenderer = renderer.BeginPatternRender(width, height))
                     {
                         iRenderer.SetBoundable((_patternContentUnits == SvgCoordinateUnits.ObjectBoundingBox) ? new GenericBoundable(0, 0, width, height) : renderer.GetBoundable());
                         iRenderer.Transform = patternMatrix;
@@ -236,13 +236,13 @@ namespace Svg
                         {
                             child.RenderElement(iRenderer);
                         }
+
+                        var brushTransform = EffectivePatternTransform.Clone();
+                        brushTransform.Translate(x, y, MatrixOrder.Append);
+                        brush = renderer.EndPatternRender(brushTransform);
                     }
 
-                    TextureBrush textureBrush = new TextureBrush(image);
-                    var brushTransform = EffectivePatternTransform.Clone();
-                    brushTransform.Translate(x, y, MatrixOrder.Append);
-                    textureBrush.Transform = brushTransform;
-                    return textureBrush;
+                    return brush;
                 }
             }
             finally
