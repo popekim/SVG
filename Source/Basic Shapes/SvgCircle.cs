@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Xml;
-using System.Web.UI.WebControls;
-using System.ComponentModel;
 
 namespace Svg
 {
@@ -13,7 +6,7 @@ namespace Svg
     /// An SVG element to render circles to the document.
     /// </summary>
     [SvgElement("circle")]
-    public class SvgCircle : SvgVisualElement
+    public class SvgCircle : SvgPathBasedElement
     {
         private GraphicsPath _path;
         
@@ -76,20 +69,11 @@ namespace Svg
         }
 
         /// <summary>
-        /// Gets the bounds of the circle.
-        /// </summary>
-        /// <value>The rectangular bounds of the circle.</value>
-        public override RectangleF Bounds
-        {
-            get { return this.Path(null).GetBounds(); }
-        }
-
-        /// <summary>
         /// Gets the <see cref="GraphicsPath"/> representing this element.
         /// </summary>
         public override GraphicsPath Path(ISvgRenderer renderer)
         {
-            if ((this._path == null || this.IsPathDirty)	&& base.StrokeWidth > 0)
+            if (this._path == null || this.IsPathDirty)
             {
 							float halfStrokeWidth = base.StrokeWidth / 2;
 

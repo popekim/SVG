@@ -374,9 +374,9 @@ namespace Svg
         }
 
         /// <summary>
-        /// Gets or sets the text anchor.
+        /// Gets or sets the space handling.
         /// </summary>
-        /// <value>The text anchor.</value>
+        /// <value>The space handling.</value>
         [SvgAttribute("space", SvgAttributeAttribute.XmlNamespace)]
         public virtual XmlSpaceHandling SpaceHandling
         {
@@ -830,6 +830,11 @@ namespace Svg
 
     	public abstract SvgElement DeepCopy();
 
+        ISvgNode ISvgNode.DeepCopy()
+        {
+            return DeepCopy();
+        }
+
 		public virtual SvgElement DeepCopy<T>() where T : SvgElement, new()
 		{
 			var newObj = new T();
@@ -884,7 +889,14 @@ namespace Svg
 				}
 			}
 
-			return newObj;
+            if (this._nodes.Count > 0)
+            {
+                foreach (var node in this._nodes)
+                {
+                    newObj.Nodes.Add(node.DeepCopy());
+                }
+            }
+            return newObj;
         }
 
 		/// <summary>
@@ -1194,6 +1206,12 @@ namespace Svg
     public interface ISvgNode
     {
         string Content { get; }
+        
+        /// <summary>
+        /// Create a deep copy of this <see cref="ISvgNode"/>.
+        /// </summary>
+        /// <returns>A deep copy of this <see cref="ISvgNode"/></returns>
+        ISvgNode DeepCopy();
     }
 
     /// <summary>This interface mostly indicates that a node is not to be drawn when rendering the SVG.</summary>

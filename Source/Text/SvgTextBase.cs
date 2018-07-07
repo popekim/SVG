@@ -26,25 +26,16 @@ namespace Svg
         public virtual string Text
         {
             get { return base.Content; }
-            set { base.Content = value; this.IsPathDirty = true; this.Content = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the text anchor.
-        /// </summary>
-        /// <value>The text anchor.</value>
-        [SvgAttribute("text-anchor", true)]
-        public virtual SvgTextAnchor TextAnchor
-        {
-            get { return (this.Attributes["text-anchor"] == null) ? SvgTextAnchor.Inherit : (SvgTextAnchor)this.Attributes["text-anchor"]; }
-            set { this.Attributes["text-anchor"] = value; this.IsPathDirty = true; }
-        }
-
-        [SvgAttribute("baseline-shift", true)]
-        public virtual string BaselineShift
-        {
-            get { return this.Attributes["baseline-shift"] as string; }
-            set { this.Attributes["baseline-shift"] = value; this.IsPathDirty = true; }
+            set {
+                Nodes.Clear();
+                Children.Clear();
+                if(value != null)
+                {
+                    Nodes.Add(new SvgContentNode { Content = value });
+                }
+                this.IsPathDirty = true;
+                Content = value;
+            }
         }
 
         public override XmlSpaceHandling SpaceHandling
@@ -250,11 +241,6 @@ namespace Svg
                     renderer.SmoothingMode = SmoothingMode.AntiAlias;
                 }
 
-                // If text color blends with background color, text will be rendered blurry
-                // To avoid it, we set SourceCopy which overwrite background color
-                var compositingMode = renderer.CompositingMode;
-                renderer.CompositingMode = CompositingMode.SourceCopy;
-
                 this.RenderFill(renderer);
                 this.RenderStroke(renderer);
                 this.RenderChildren(renderer);
@@ -264,8 +250,6 @@ namespace Svg
                 {
                     renderer.SmoothingMode = SmoothingMode.Default;
                 }
-
-                renderer.CompositingMode = compositingMode;
 
                 this.ResetClip(renderer);
                 this.PopTransforms(renderer);

@@ -199,11 +199,10 @@ namespace Svg
                         break;
                 }
             }
-
-            renderer.SetClip(new RectangleF(x, y, width, height));
-            renderer.ScaleTransform(fScaleX, fScaleY, MatrixOrder.Prepend);
-            renderer.TranslateTransform(x, y);
-            renderer.TranslateTransform(fMinX, fMinY);
+            
+            renderer.TranslateTransform(x, y, MatrixOrder.Prepend);
+            renderer.TranslateTransform(fMinX, fMinY, MatrixOrder.Prepend);
+            renderer.ScaleTransform(fScaleX, fScaleY, MatrixOrder.Prepend);       
         }
     }
 

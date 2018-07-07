@@ -26,6 +26,18 @@ namespace Svg
             set { this._dirty = value; }
         }
 
+        /// <summary>
+        /// Force recreation of the paths for the element and it's children.
+        /// </summary>
+        public void InvalidateChildPaths()
+        {
+            this.IsPathDirty = true;
+            foreach (SvgElement element in this.Children)
+            {
+                element.InvalidateChildPaths();
+            }
+        }
+
         protected static float FixOpacityValue(float value)
         {
             const float max = 1.0f;
@@ -66,7 +78,7 @@ namespace Svg
         [SvgAttribute("fill-opacity", true)]
         public virtual float FillOpacity
         {
-            get { return (float)(this.Attributes["fill-opacity"] ?? this.Opacity); }
+            get { return (float)(this.Attributes["fill-opacity"] ?? 1.0f); }
             set { this.Attributes["fill-opacity"] = FixOpacityValue(value); }
         }
 
@@ -121,7 +133,7 @@ namespace Svg
         [SvgAttribute("stroke-opacity", true)]
         public virtual float StrokeOpacity
         {
-            get { return (float)(this.Attributes["stroke-opacity"] ?? this.Opacity); }
+            get { return (float)(this.Attributes["stroke-opacity"] ?? 1.0f); }
             set { this.Attributes["stroke-opacity"] = FixOpacityValue(value); }
         }
 
@@ -155,6 +167,26 @@ namespace Svg
         {
             get { return this.Attributes.GetInheritedAttribute<SvgShapeRendering>("shape-rendering"); }
             set { this.Attributes["shape-rendering"] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the text anchor.
+        /// </summary>
+        [SvgAttribute("text-anchor", true)]
+        public virtual SvgTextAnchor TextAnchor
+        {
+            get { return this.Attributes.GetInheritedAttribute<SvgTextAnchor>("text-anchor"); }
+            set { this.Attributes["text-anchor"] = value; this.IsPathDirty = true; }
+        }
+
+        /// <summary>
+        /// Specifies dominant-baseline positioning of text.
+        /// </summary>
+        [SvgAttribute("baseline-shift", true)]
+        public virtual string BaselineShift
+        {
+            get { return this.Attributes.GetInheritedAttribute<string>("baseline-shift"); }
+            set { this.Attributes["baseline-shift"] = value; this.IsPathDirty = true; }
         }
 
         /// <summary>

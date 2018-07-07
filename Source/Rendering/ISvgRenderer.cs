@@ -22,7 +22,6 @@ namespace Svg
         void ReplaceClip(RectangleF region);
         void SetClip(GraphicsPath path);
         void SetClip(RectangleF rectangle);
-        CompositingMode CompositingMode { get; set; }
         SmoothingMode SmoothingMode { get; set; }
         Matrix Transform { get; set; }
         void TranslateTransform(float dx, float dy, MatrixOrder order = MatrixOrder.Append);
