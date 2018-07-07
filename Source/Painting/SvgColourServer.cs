@@ -53,12 +53,14 @@ namespace Svg
         	
             Color c = this.Colour;
 
+// TODO: fix this for .net core 
+#if !NETCOREAPP
             // Return the name if it exists
             if (c.IsKnownColor)
             {
                 return c.Name;
             }
-
+#endif
             // Return the hex value
             return String.Format("#{0}", c.ToArgb().ToString("x").Substring(2));
         }

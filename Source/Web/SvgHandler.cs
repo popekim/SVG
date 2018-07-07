@@ -1,3 +1,5 @@
+// TODO: fix this for .net core 
+#if !NETCOREAPP
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -230,3 +232,4 @@ namespace Svg.Web
         }
     }
 }
+#endif
